@@ -66,6 +66,48 @@ Create original brand identity, content and assets.
 Only reuse third-party assets when their licensing
 and usage permissions allow it.
 
+## Architecture
+
+The system architecture is documented in `docs/architecture/`
+(system overview, workflow, skill contracts, dependency graph,
+artifact schema, quality standards). Read the relevant document
+before building or changing a skill, and keep it in sync with
+any architectural change.
+
+## Development workflow
+
+Remote: `origin` → https://github.com/RChaubey16/visualforge
+
+One task at a time, in this loop:
+
+1.  `git checkout main && git pull` to start from the latest `main`.
+2.  Create a feature branch for the task (for example
+    `feature/reference-analyzer-skill`).
+3.  Implement, validate and test the task.
+4.  Commit (Conventional Commits) and push the branch.
+5.  Raise a PR against `main` with `gh pr create`.
+6.  Stop and wait. The user reviews and merges the PR.
+7.  Only after the merge, move on to the next task.
+
+Skill build order (one PR per item, following
+`docs/architecture/system-overview.md` §7):
+
+1.  Shared artifact schemas (`schemas/`)
+2.  website-orchestrator (state and resume core)
+3.  reference-analyzer
+4.  design-system-extractor
+5.  ux-design-analyst
+6.  page-specification
+7.  nextjs-architect
+8.  frontend-implementer
+9.  motion-engineer
+10. visual-qa
+11. release-auditor
+12. website-orchestrator (full stage routing and QA loop)
+
+Approved stack additions: `@axe-core/playwright` for
+accessibility scanning.
+
 ## Rules
 
 ### Git
