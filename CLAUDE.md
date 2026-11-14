@@ -84,10 +84,14 @@ One task at a time, in this loop:
 2.  Create a feature branch for the task (for example
     `feature/reference-analyzer-skill`).
 3.  Implement, validate and test the task.
-4.  Commit (Conventional Commits) and push the branch.
-5.  Raise a PR against `main` with `gh pr create`.
-6.  Stop and wait. The user reviews and merges the PR.
-7.  Only after the merge, move on to the next task.
+4.  Update `PROGRESS.md` as the last step of the task: status, build
+    order table, work log, open decisions and environment notes.
+    After an interruption (API limits, a lost session), read
+    `PROGRESS.md` first to pick up where work stopped.
+5.  Commit (Conventional Commits) and push the branch.
+6.  Raise a PR against `main` with `gh pr create`.
+7.  Stop and wait. The user reviews and merges the PR.
+8.  Only after the merge, move on to the next task.
 
 Skill build order (one PR per item, following
 `docs/architecture/system-overview.md` §7):
