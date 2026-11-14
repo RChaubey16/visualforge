@@ -1,0 +1,13 @@
+node_modules/
+.next/
+out/
+.env*
+!.env.example
+.DS_Store
+*.log
+.claude/settings.local.json
+# Skill Creator eval workspaces
+*-workspace/
+# Playwright output
+test-results/
+playwright-report/
