@@ -1,0 +1,73 @@
+{
+  "skill_name": "website-orchestrator",
+  "evals": [
+    {
+      "id": 1,
+      "name": "fresh-full-project",
+      "prompt": "I want to start a new VisualForge project. Reference site is https://linear.app \u2014 I like how calm and precise it feels, the dark surfaces, tight typography and the subtle motion. Target page: just the homepage for now. Our brand is 'Tidewater', a project-planning tool for small architecture studios. Audience is studio principals and project leads. Call the project tidewater. Viewports default is fine. I approve the brief as described, go ahead and run the full workflow.",
+      "expected_output": "Project workspace projects/tidewater/ with brief.md and valid state; preflight recorded; Gate A recorded approved; mode full; research stage invoked or, because stage skills are not installed, reported as blocked with a remedy; no fabricated research artifacts; project report written.",
+      "files": [],
+      "assertions": [
+        "Workspace projects/tidewater/ created with brief.md",
+        "Project state file exists and is valid JSON",
+        "Gate A (brief approval) recorded as approved in state",
+        "Browser actually probed (navigate/snapshot), not judged from loaded tool schemas",
+        "Tool preflight recorded in state (browser + node checks)",
+        "No research output written without browser evidence on disk",
+        "Final response explains research is blocked because the reference-analyzer skill is missing",
+        "Project report written to the project root",
+        "No Next.js app scaffolded"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "resume-interrupted-project",
+      "prompt": "Can you resume the harbor project? My laptop died yesterday in the middle of the run, no idea where it got to.",
+      "expected_output": "Lock acquired, reconcile run; interrupted S2b-design-system detected and marked failed; S1-research and S2a-ux kept as completed (not re-run, outputs unchanged); the retry of S2b is attempted or reported blocked because design-system-extractor is not installed; user told what was found; project report updated.",
+      "files": [
+        "fixture: projects/harbor with S1 and S2a completed, S2b running"
+      ],
+      "assertions": [
+        "Completed S1/S2a outputs left byte-identical (not re-run or rewritten)",
+        "Interrupted S2b-design-system no longer marked 'running'",
+        "S1-research and S2a-ux still marked completed in state",
+        "Final response tells the user the design-system stage was interrupted",
+        "Final response says research and UX analysis were kept / not repeated",
+        "Orchestrator lock released at the end",
+        "Project report written to the project root"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "research-only",
+      "prompt": "just want research for now, no design or build. reference is https://stripe.com/payments - look at how they structure the page, their type and colour system and the scroll animations. project name stripe-study, page = payments page. brand placeholder 'Ledgerly' (fintech for freelancers).",
+      "expected_output": "Project created in research mode with only S0/S1 in scope; brief written; run stops at Gate A asking for approval (user did not approve) or, if treated as approved, S1 attempted/blocked; no stages beyond S1 started; no design/spec/site artifacts created.",
+      "files": [],
+      "assertions": [
+        "Workspace projects/stripe-study/ created with brief.md",
+        "Browser actually probed (navigate/snapshot), not judged from loaded tool schemas",
+        "State records research-only mode",
+        "Final response asks the user to approve the brief before research starts",
+        "No analysis/design/spec/site artifacts created",
+        "No research output written without browser evidence on disk",
+        "Project report written to the project root"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "browser-unavailable",
+      "prompt": "New VisualForge project 'meridian' from https://vercel.com, homepage only, brand 'Meridian Freight' (logistics dashboard for regional carriers). Brief approved, run it end to end. (Environment note: the Playwright MCP server is not connected in this session, so the mcp__playwright__* browser tools are unavailable.)",
+      "expected_output": "Preflight records browser unavailable and reports which stages it blocks; S1-research reported blocked (browser_unavailable or missing skill) with remedy; no fallback to WebFetch/curl to produce 'observations'; no research artifacts fabricated; project report explains the blocker and next step.",
+      "files": [],
+      "assertions": [
+        "State records the browser tools as unavailable",
+        "Final response says research and visual QA are blocked by the missing browser",
+        "Final response tells the user how to fix it (connect/enable Playwright MCP)",
+        "No WebFetch/curl fallback used to inspect the reference",
+        "No research artifacts written",
+        "Project report written to the project root",
+        "No Next.js app scaffolded"
+      ]
+    }
+  ]
+}

@@ -67,6 +67,7 @@ projects/<name>/state/
 ├── project-state.json         # single source of truth (schema: artifact-schema.md §5)
 ├── run-log.jsonl              # append-only event log
 ├── stages/<stage-id>.result.json
+├── envelopes/<stage-id>.run<n>.json
 └── locks/orchestrator.lock    # PID + timestamp; prevents concurrent orchestrators
 ```
 
