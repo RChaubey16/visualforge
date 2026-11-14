@@ -8,11 +8,13 @@ Status: **Approved** (2026-11-14). Canonical JSON Schemas will live in `schemas/
 ```
 projects/<project-name>/
 ├── brief.md                         S0  project brief (Gate A record)
+├── project-report.md                S0  orchestrator report, rewritten on every stop
 ├── state/                           S0  orchestrator only
 │   ├── project-state.json
 │   ├── run-log.jsonl
 │   ├── status.md
 │   ├── stages/<stage-id>.result.json   written by each stage
+│   ├── envelopes/<stage-id>.run<n>.json  invocation envelopes (audit trail)
 │   └── locks/orchestrator.lock
 ├── research/                        S1  reference-analyzer
 │   ├── capture-plan.json
@@ -57,7 +59,8 @@ projects/<project-name>/
 │   └── iteration-<n>/{qa-report.md, defects.json, screenshots/, test-results/}
 ├── release/                         S8  release-auditor
 │   ├── release-report.md
-│   └── checklist.json
+│   ├── checklist.json
+│   └── defects.json                 failing checks, routed like QA defects
 └── site/                            S4–S6 Next.js app
 ```
 
@@ -124,7 +127,12 @@ Rules:
 {
   "schema_version": "1.0",
   "project": { "name": "acme-studio", "reference_url": "https://example.com", "created_at": "…" },
-  "config": { "viewports": [375, 768, 1280, 1440], "qa_budget": 3, "commits_authorised": false },
+  "run_mode": "full | research | design-spec | implementation | visual-qa",
+  "config": { "viewports": [375, 768, 1280, 1440], "qa_budget": 3, "commits_authorised": false,
+              "target_pages": ["home"] },
+  "tools": { "checked_at": "…", "browser_mcp": "available | unavailable",
+             "node": { "version": "v22.x", "ok": true }, "npm": {…}, "npx": {…}, "git": {…},
+             "problems": [] },
   "gates": {
     "A": { "status": "approved", "at": "…", "notes": "" },
     "B": { "status": "pending" },
@@ -138,14 +146,23 @@ Rules:
       "input_fingerprint": "sha256:…",
       "outputs": { "research/observations.json": "sha256:…" },
       "started_at": "…", "finished_at": "…",
+      "attempts": 0,
       "checkpoints_done": 8, "checkpoints_total": 8,
-      "error": null
+      "error": null,
+      "blocked_reason": null
     }
   },
-  "qa": { "iteration": 1, "open": { "blocker": 0, "major": 3, "minor": 5 } },
+  "qa": { "iteration": 1, "open": { "blocker": 0, "major": 3, "minor": 5 },
+          "decision": "pass | fix | budget_exhausted | report_only | accepted" },
   "git": { "branch": "feature/acme-studio-site", "last_commit": null }
 }
 ```
+
+`attempts` counts runs since the last success (max 2, then `blocked`).
+`blocked_reason` is one of `missing_skill`, `browser_unavailable`,
+`retries_exhausted`, `stage_reported`, `other`. The first two are
+re-checked on every resume. The website-orchestrator skill's
+`scripts/vf_state.py` is the only writer of this file.
 
 ## 6. `state/stages/<stage-id>.result.json`
 
